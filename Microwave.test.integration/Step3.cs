@@ -28,7 +28,7 @@ namespace Microwave.test.integration
             _timer = Substitute.For<ITimer>();
             _powerTube = Substitute.For<IPowerTube>();
             _display = new Display(_output);
-            _sut = new UserInterface();
+            //_sut = new UserInterface();
         }
 
         [Test]
