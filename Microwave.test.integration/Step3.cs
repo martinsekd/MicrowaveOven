@@ -7,6 +7,7 @@ using NSubstitute;
 using NUnit.Framework;
 using MicrowaveOvenClasses.Interfaces;
 using MicrowaveOvenClasses.Boundary;
+using MicrowaveOvenClasses.Controllers;
 
 namespace Microwave.test.integration
 {
@@ -15,18 +16,25 @@ namespace Microwave.test.integration
     {
         private Output _output;
         private Display _display;
-        private PowerTube _powerTube;
+        private IPowerTube _powerTube;
         private ITimer _timer;
+        private Button _button;
+        private Door _door;
+        private UserInterface _sut;
 
         [SetUp]
         public void SetUp()
         {
-
+            _timer = Substitute.For<ITimer>();
+            _powerTube = Substitute.For<IPowerTube>();
+            _display = new Display(_output);
+            _sut = new UserInterface();
         }
 
         [Test]
-        public void thatnogetsker()
+        public void Buttonspressed()
         {
+            
             //_sut.TurnOn();
             //Assert.That(_output.OutTextTest.Contains("Light is turned on"));
         }
