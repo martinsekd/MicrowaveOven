@@ -67,6 +67,7 @@
     <Compile Include="PowerTubeTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimerTest.cs" />
+    <Compile Include="UIIntegrationTest.cs" />
     <Compile Include="UserInterfaceTest.cs" />
   </ItemGroup>
   <ItemGroup>
