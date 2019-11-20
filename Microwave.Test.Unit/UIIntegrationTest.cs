@@ -130,6 +130,61 @@ namespace Microwave.Test.Unit
         public void Press_pressButtonToActivateEvent_casecalled4()
         {
             startCancelButton.Press();
+            stubDisplay.Received(1).Clear();
+        }
+
+
+        [Test]
+        public void Close_openDoorAndThenClose_TurnOffCalled()
+        {
+            door.Open();
+            door.Close();
+            stubLight.Received(1).TurnOff();
+        }
+
+
+
+
+        [Test]
+        public void Open_openDoorAndThen1_Called()
+        {
+            door.Open();
+            
+            stubLight.Received(1).TurnOn();
+        }
+
+        [Test]
+        public void Open_openDoorAndThen2_Called()
+        {
+            powerButton.Press();
+            door.Open();
+            
+            stubLight.Received(1).TurnOn();
+            stubDisplay.Received(1).Clear();
+        }
+
+        [Test]
+        public void Open_openDoorAndThen3_Called()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            door.Open();
+
+
+            stubLight.Received(1).TurnOn();
+            stubDisplay.Received(1).Clear();
+        }
+
+        [Test]
+        public void Open_openDoorAndThen4_Called()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+            door.Open();
+
+
+            stubCookController.Received(1).Stop();
         }
     }
 }
