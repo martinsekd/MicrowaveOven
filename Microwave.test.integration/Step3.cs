@@ -20,7 +20,7 @@ namespace Microwave.test.integration
         private ITimer _timer;
         private Button _button;
         private Door _door;
-        private UserInterface _sut;
+        //private UserInterface _sut;
 
         [SetUp]
         public void SetUp()
