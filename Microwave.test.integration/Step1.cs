@@ -23,8 +23,7 @@ namespace Microwave.test.integration
         [Test]
         public void thatnogetsker()
         {
-            //_sut.TurnOn();
-            //Assert.That(_output.OutTextTest.Contains("sker"));
+            
         }
     }
 }
