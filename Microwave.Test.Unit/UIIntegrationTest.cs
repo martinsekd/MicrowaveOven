@@ -39,9 +39,26 @@ namespace Microwave.Test.Unit
 
 
         [Test]
-        public void Press_press()
+        public void Press_pressButtonToActivateEvent_OnPowerPressedRaised()
         {
             powerButton.Press();
+            sut_.Received(1).OnPowerPressed(Arg.Any<object>(),Arg.Any<EventArgs>());
+            
+        }
+
+        [Test]
+        public void Press_pressButtonToActivateEvent_OnTimePressedRaised()
+        {
+            timeButton.Press();
+            sut_.Received(1).OnTimePressed(Arg.Any<object>(), Arg.Any<EventArgs>());
+            
+        }
+
+        [Test]
+        public void Press_pressButtonToActivateEvent_OnStartCancelRaised()
+        {
+            startCancelButton.Press();
+            sut_.Received(1).OnStartCancelPressed(Arg.Any<object>(), Arg.Any<EventArgs>());
         }
     }
 }
