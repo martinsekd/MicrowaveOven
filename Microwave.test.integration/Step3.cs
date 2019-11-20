@@ -20,7 +20,7 @@ namespace Microwave.test.integration
         private ITimer _timer;
         private Button _button;
         private Door _door;
-        private UserInterface _sut;
+        //private UserInterface _sut;
 
         [SetUp]
         public void SetUp()
@@ -28,7 +28,7 @@ namespace Microwave.test.integration
             _timer = Substitute.For<ITimer>();
             _powerTube = Substitute.For<IPowerTube>();
             _display = new Display(_output);
-            _sut = new UserInterface();
+            //_sut = new UserInterface();
         }
 
         [Test]
