@@ -75,6 +75,9 @@ namespace MicrowaveOvenClasses.Controllers
         {
             switch (myState)
             {
+                case States.READY:
+                    myDisplay.Clear();
+                    break;
                 case States.SETPOWER:
                     powerLevel = 50;
                     time = 1;

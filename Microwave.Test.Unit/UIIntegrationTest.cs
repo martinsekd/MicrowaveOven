@@ -20,6 +20,10 @@ namespace Microwave.Test.Unit
         private IButton timeButton;
         private IDoor door;
 
+        private ICookController stubCookController;
+        private IDisplay stubDisplay;
+        private ILight stubLight;
+
         [SetUp]
         public void SetUp()
         {
@@ -29,9 +33,9 @@ namespace Microwave.Test.Unit
 
             door = new Door();
 
-            var stubCookController = Substitute.For<ICookController>();
-            var stubDisplay = Substitute.For<IDisplay>();
-            var stubLight = Substitute.For<ILight>();
+            stubCookController = Substitute.For<ICookController>();
+            stubDisplay = Substitute.For<IDisplay>();
+            stubLight = Substitute.For<ILight>();
 
             sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, stubDisplay, stubLight, stubCookController);
 
@@ -39,26 +43,93 @@ namespace Microwave.Test.Unit
 
 
         [Test]
-        public void Press_pressButtonToActivateEvent_OnPowerPressedRaised()
+        public void Press_pressPowerButtonTwice_ShowPowerCalled()
         {
             powerButton.Press();
-            sut_.Received(1).OnPowerPressed(Arg.Any<object>(),Arg.Any<EventArgs>());
+            stubDisplay.Received(1).ShowPower(Arg.Any<int>());
+            //sut_.Received(1).OnPowerPressed(Arg.Any<object>(),Arg.Any<EventArgs>());
             
         }
 
         [Test]
-        public void Press_pressButtonToActivateEvent_OnTimePressedRaised()
+        public void Press_pressPowerButtonOnce_ShowPowerCalled()
         {
+            powerButton.Press();
+            powerButton.Press();
+            stubDisplay.Received(2).ShowPower(Arg.Any<int>());
+            //sut_.Received(1).OnPowerPressed(Arg.Any<object>(),Arg.Any<EventArgs>());
+
+        }
+
+
+        [Test]
+        public void Press_pressTimeButtonOnce_ShowTimeCalled()
+        {
+            powerButton.Press();
             timeButton.Press();
-            sut_.Received(1).OnTimePressed(Arg.Any<object>(), Arg.Any<EventArgs>());
+            stubDisplay.Received(1).ShowTime(Arg.Any<int>(), Arg.Any<int>());
+            //sut_.Received(1).OnTimePressed(Arg.Any<object>(), Arg.Any<EventArgs>());
+
+        }
+
+        [Test]
+        public void Press_pressTimeButtonAndPowerButton_ShowTimeCalled()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            timeButton.Press();
+            
+
+            stubDisplay.Received(2).ShowTime(Arg.Any<int>(),Arg.Any<int>());
+            //sut_.Received(1).OnTimePressed(Arg.Any<object>(), Arg.Any<EventArgs>());
+
+        }
+
+        [Test]
+        public void Press_pressButtonToActivateEvent_casecalled1()
+        {
+            powerButton.Press();
+            startCancelButton.Press();
+
+            stubLight.Received(1).TurnOff();
+            stubDisplay.Received(1).Clear();
+        }
+
+        [Test]
+        public void Press_pressButtonToActivateEvent_casecalled2()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+
+            stubDisplay.Received(1).Clear();
+            stubLight.Received(1).TurnOn();
+            stubCookController.Received(1).StartCooking(Arg.Any<int>(),Arg.Any<int>());
+
             
         }
 
         [Test]
-        public void Press_pressButtonToActivateEvent_OnStartCancelRaised()
+        public void Press_pressButtonToActivateEvent_casecalled3()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+            startCancelButton.Press();
+
+            stubDisplay.Received(2).Clear();
+            stubLight.Received(1).TurnOn();
+            stubCookController.Received(1).StartCooking(Arg.Any<int>(), Arg.Any<int>());
+
+            stubCookController.Received(1).Stop();
+            stubLight.Received(1).TurnOff();
+
+        }
+
+        [Test]
+        public void Press_pressButtonToActivateEvent_casecalled4()
         {
             startCancelButton.Press();
-            sut_.Received(1).OnStartCancelPressed(Arg.Any<object>(), Arg.Any<EventArgs>());
         }
     }
 }
