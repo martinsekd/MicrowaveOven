@@ -83,15 +83,15 @@ namespace Microwave.test.integration
         {
             powerButton.Press();
 
-            fakeOutput.Received(1).OutputLine(Arg.Is<string>(str => RegexHelper.MatchWithWildCard(str, "Display shows: * W")));
+            fakeOutput.Received(1).OutputLine(Arg.Is<string>(str => Helper.RegexMatchWithWildCard(str, "Display shows: * W")));
         }
 
         [Test]
-        public void PressPowerButtonPressTimeButton_DisplayShowsTime()
+        public void PressPowerAndTimeButton_DisplayShowsTime()
         {
             powerButton.Press();
             timeButton.Press();
-            fakeOutput.Received(1).OutputLine(Arg.Is<string>(str => RegexHelper.MatchWithWildCard(str, "Display shows: *:*")));
+            fakeOutput.Received(1).OutputLine(Arg.Is<string>(str => Helper.RegexMatchWithWildCard(str, "Display shows: *:*")));
         }
 
         //ICookController
