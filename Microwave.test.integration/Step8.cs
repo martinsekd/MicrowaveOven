@@ -31,7 +31,7 @@ namespace Microwave.test.integration
             //_powerTube.TurnOff();
             _powerTube.TurnOn(power:50);
 
-            Assert.That(_output,Is.EqualTo("50 %"));
+            Assert.That(_output.OutPutText,Is.EqualTo("50 %"));
         }
         [Test]
         public void TurnOff_WasOn_CorrectOutput()
@@ -39,7 +39,7 @@ namespace Microwave.test.integration
             _powerTube.TurnOn(power: 50);
             _powerTube.TurnOff();
 
-            Assert.That(_output, Is.EqualTo("PowerTube turned off"));
+            Assert.That(_output.OutPutText, Is.EqualTo("PowerTube turned off"));
         }
     }
 }
