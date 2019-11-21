@@ -46,13 +46,15 @@ namespace Microwave.test.integration
 
             door = new Door();
 
-            
+            sutTimer = Substitute.For<ITimer>();
+
             sutDisplay = new Display(stubOutput);
             sutPowerTube = new PowerTube(stubOutput);
 
             sutCookController = new CookController(sutTimer,sutDisplay,sutPowerTube);
             sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, sutDisplay, stubLight, sutCookController);
             sutCookController.UI = sut_;
+            
 
 
 
@@ -61,9 +63,15 @@ namespace Microwave.test.integration
         [Test]
         public void cookControllerCallUserInterface()
         {
-            
-            //sutCookController.OnTimerExpired += Raise.EventWith(new object());
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
 
+            //don't want to wait 1 minut every test
+            sutTimer.Expired += Raise.Event();
+
+            stubLight.Received(1).TurnOff();
+            
         }
 
         [Test]
