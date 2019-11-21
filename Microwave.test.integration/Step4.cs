@@ -67,11 +67,12 @@ namespace Microwave.test.integration
             timeButton.Press();
             startCancelButton.Press();
 
-            //don't want to wait 1 minut every test
+            //don't want to wait too long
             sutTimer.Expired += Raise.Event();
-
             stubLight.Received(1).TurnOff();
             
+            //sutCookController.OnTimerExpired += Raise.EventWith(new object());
+
         }
 
         [Test]
@@ -81,9 +82,31 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void cookControllerCallPowerTube()
+        public void TurnOn_cookControllerCallPowerTube()
         {
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
 
+            //don't want to wait too long
+            sutTimer.Expired += Raise.Event();
+
+
+            stubOutput.Received(1).OutputLine(Arg.Any<string>());
+        }
+
+        [Test]
+        public void TurnOff_cookControllerCallPowerTube()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+
+            //don't want to wait too long
+            sutTimer.Expired += Raise.Event();
+            
+
+            stubOutput.Received(1).OutputLine($"PowerTube turned off");
         }
 
         [Test]
