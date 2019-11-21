@@ -14,21 +14,36 @@ namespace Microwave.test.integration
     [TestFixture]
     public class Step3
     {
-        private Output _output;
-        private Display _display;
-        private IPowerTube _powerTube;
-        private ITimer _timer;
-        private Button _button;
-        private Door _door;
-        //private UserInterface _sut;
+        private Button powerButton;
+        private Button timeButton;
+        private Button startCancelButton;
+        private Door door;
+        private IOutput fakeOutput;
+        private ITimer fakeTimer;
+        private IPowerTube fakePowerTube;
+        private Light light;
+        private Display display;
+        private CookController cookController;
+        private UserInterface sut;
 
         [SetUp]
         public void SetUp()
         {
-            _timer = Substitute.For<ITimer>();
-            _powerTube = Substitute.For<IPowerTube>();
-            _display = new Display(_output);
-            //_sut = new UserInterface();
+            powerButton = new Button();
+            timeButton = new Button();
+            startCancelButton = new Button();
+            door = new Door();
+
+            fakeOutput = Substitute.For<IOutput>();
+            fakeTimer = Substitute.For<ITimer>();
+            fakePowerTube = Substitute.For<IPowerTube>();
+
+            light = new Light(fakeOutput);
+            display = new Display(fakeOutput);
+            cookController = new CookController(fakeTimer, display, fakePowerTube);
+            sut = new UserInterface(powerButton, timeButton, startCancelButton, door, display, light, cookController);
+
+            cookController.UI = sut;
         }
 
         [Test]
