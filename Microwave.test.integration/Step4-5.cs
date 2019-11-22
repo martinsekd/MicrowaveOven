@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
@@ -9,11 +10,12 @@ using MicrowaveOvenClasses.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
 using NUnit.Framework.Internal.Execution;
+using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.test.integration
 {
     [TestFixture]
-    public class Step4
+    public class Step45
     {
 
         //top modules
@@ -46,7 +48,7 @@ namespace Microwave.test.integration
 
             door = new Door();
 
-            sutTimer = Substitute.For<ITimer>();
+            sutTimer = new Timer();
 
             sutDisplay = new Display(stubOutput);
             sutPowerTube = new PowerTube(stubOutput);
@@ -60,55 +62,29 @@ namespace Microwave.test.integration
 
         }
 
-        [Test]
-        public void cookControllerCallUserInterface()
-        {
-            powerButton.Press();
-            timeButton.Press();
-            startCancelButton.Press();
-
-            //don't want to wait too long
-            sutTimer.Expired += Raise.Event();
-            stubLight.Received(1).TurnOff();
-            
-            //sutCookController.OnTimerExpired += Raise.EventWith(new object());
-
-        }
 
         [Test]
         public void cookControllerCallTimer()
         {
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+
+            Thread.Sleep(61000);
+            stubOutput.Received().OutputLine(Arg.Is<string>("PowerTube turned off"));
 
         }
 
+
         [Test]
-        public void TurnOn_cookControllerCallPowerTube()
+        public void cookControllerCallDisplay()
         {
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
-            //don't want to wait too long
-            sutTimer.Expired += Raise.Event();
-
-            //stubOutput.Received(1).OutputLine("");
-            stubOutput.Received(1).OutputLine($"PowerTube works with 50 W");
+            Thread.Sleep(3000);
+            stubOutput.Received().OutputLine(Arg.Is<string>(s => s.StartsWith("Display shows:") && s.Length-s.Replace(":","").Length==2));
         }
-
-        [Test]
-        public void TurnOff_cookControllerCallPowerTube()
-        {
-            powerButton.Press();
-            timeButton.Press();
-            startCancelButton.Press();
-
-            //don't want to wait too long
-            sutTimer.Expired += Raise.Event();
-            
-
-            stubOutput.Received(1).OutputLine($"PowerTube turned off");
-        }
-
-        
     }
 }
