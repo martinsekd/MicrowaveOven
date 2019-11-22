@@ -78,5 +78,34 @@ namespace Microwave.test.integration
 
 
         }
+
+        [Test]
+        public void thatnogetsker3()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+
+            Thread.Sleep(62000);
+            stubDisplay.DidNotReceive().ShowTime(0, 59);
+
+
+        }
+
+        [Test]
+        public void thatnogetsker4()
+        {
+            powerButton.Press();
+            timeButton.Press();
+            
+            startCancelButton.Press();
+
+            Thread.Sleep(62000);
+            
+            stubPowerTube.Received(1).TurnOff();
+            stubDisplay.Received(2).Clear();
+
+        }
     }
 }
