@@ -88,7 +88,7 @@ namespace Microwave.test.integration
             startCancelButton.Press();
 
             Thread.Sleep(62000);
-            stubDisplay.DidNotReceive().ShowTime(0, 59);
+            stubDisplay.DidNotReceive().ShowTime(0, 50);
 
 
         }
