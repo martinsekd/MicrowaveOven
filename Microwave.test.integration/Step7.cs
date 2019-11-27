@@ -100,31 +100,12 @@ namespace Microwave.test.integration
         public void TurnOn_WasOn_CorrectOutput()
         {
             _door.Open();
-            _light.TurnOn();
-            _light.TurnOn();
 
             //Assert
             //_output.Received().OutputLine(Arg.Is<string>(x =>
             //    x == "Light is turned on"));
             
             Assert.That(stringWriter.ToString(),Does.Contain("on"));
-        }
-
-        [Test]
-        public void TurnOff_WasOff_CorrectOutput()
-        {
-            //Have to turn on, and then turn off twice to check this - because isOn (boolean) is set to false at start
-            _door.Close();
-            _light.TurnOn();
-            //_door.Open();
-            //_door.Close();
-            _light.TurnOff();
-            _light.TurnOff();
-
-            //Assert
-           // _output.Received().OutputLine(Arg.Is<string>(x =>
-             //   x == "Light is turned off"));
-             Assert.That(stringWriter.ToString(),Does.Contain("off"));
         }
     }
 }
