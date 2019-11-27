@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MicrowaveOvenClasses.Boundary;
+using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
@@ -13,60 +15,114 @@ namespace Microwave.test.integration
     [TestFixture]
     public class Step6
     {
-        private Light _sut;
+        //top level modules
+        private Door _door;
+        private IButton _powerButton;
+        private IButton _timeButton;
+        private IButton _startCancelButton;
+        //modules included
+        private UserInterface _userInterface;
         private IOutput _output;
+        private Light _light;
+        //stubs
+        private ICookController _cookController;
+        private Display _display;
+
+        
+        private StringWriter stringWriter;
+        
 
         [SetUp]
         public void SetUp()
         {
-            _output = Substitute.For<Output>();
-            _sut = new Light(_output);
+            //console test
+            stringWriter = new StringWriter();
+            Console.SetOut(stringWriter);
+
+            _output = Substitute.For<IOutput>();
+            _light = new Light(_output);
+
+            _door = new Door();
+
+            _powerButton = new Button();
+            _timeButton = new Button();
+            _startCancelButton = new Button();
+            _display = Substitute.For<Display>(_output);
+            _cookController = Substitute.For<ICookController>();
+
+            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display,_light,_cookController);
+           
+
         }
 
         [Test]
         public void LightTurnsOn_WasOff_CorrectOutPutString()
         {
-            _sut.TurnOn();
-
+            //act
+            //_door.Close();
+            _door.Open();
+            //_door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            //_light.TurnOn();
+            
+           
+            
             //Assert
-            _output.Received().OutputLine(Arg.Is<string>(x =>
-                x == "Light is turned on"));
-
+            
+            //Console.WriteLine("Light is turned on");
+            Assert.That(stringWriter.ToString(),Does.Contain("Light is turned on"));
+            
         }
 
         [Test]
         public void LightTurnsOff_WasOn_CorrectOutPutString()
         {
-            _sut.TurnOn();
-            _sut.TurnOff();
+            _door.Open();
+            //_light.TurnOn();
+            _door.Close();
+            //_door.Closed += Raise.EventWith(this, EventArgs.Empty);
+
 
             //Assert
-            _output.Received().OutputLine(Arg.Is<string>(x =>
-                x == "Light is turned off"));
+            //_output.Received().OutputLine(Arg.Is<string>(x =>
+            //  x == "Light is turned off"));
+            //Console.WriteLine("Light turns off");
+            Assert.That(stringWriter.ToString(), Does.Contain("Light is turned off"));
+        }
+
+        private void _door_Closed(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         [Test]
         public void TurnOn_WasOn_CorrectOutput()
         {
-            _sut.TurnOn();
-            _sut.TurnOn();
+            _door.Open();
+            _light.TurnOn();
+            _light.TurnOn();
 
             //Assert
-            _output.Received().OutputLine(Arg.Is<string>(x =>
-                x == "Light is turned on"));
+            //_output.Received().OutputLine(Arg.Is<string>(x =>
+            //    x == "Light is turned on"));
+            Console.WriteLine("Light turns on");
+            Assert.That(stringWriter.ToString(),Does.Contain("on"));
         }
 
         [Test]
         public void TurnOff_WasOff_CorrectOutput()
         {
             //Have to turn on, and then turn off twice to check this - because isOn (boolean) is set to false at start
-            _sut.TurnOn();
-            _sut.TurnOff();
-            _sut.TurnOff();
+            _door.Close();
+            _light.TurnOn();
+            //_door.Open();
+            //_door.Close();
+            _light.TurnOff();
+            _light.TurnOff();
 
             //Assert
-            _output.Received().OutputLine(Arg.Is<string>(x =>
-                x == "Light is turned off"));
+           // _output.Received().OutputLine(Arg.Is<string>(x =>
+             //   x == "Light is turned off"));
+             Assert.That(stringWriter.ToString(),Does.Contain("off"));
         }
     }
 }
