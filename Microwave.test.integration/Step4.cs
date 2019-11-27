@@ -109,6 +109,7 @@ namespace Microwave.test.integration
             stubOutput.Received(1).OutputLine($"PowerTube turned off");
         }
 
+
         
     }
 }
