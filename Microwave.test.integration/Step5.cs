@@ -9,6 +9,7 @@ using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
+using NUnit.Framework.Internal.Execution;
 using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.test.integration
@@ -27,85 +28,63 @@ namespace Microwave.test.integration
         private UserInterface sut_;
         private CookController sutCookController;
         private ITimer sutTimer;
+        private IDisplay sutDisplay;
+        private IPowerTube sutPowerTube;
+
 
         //stubs
         private ILight stubLight;
-        private IDisplay stubDisplay;
-        private IPowerTube stubPowerTube;
+        private IOutput stubOutput;
 
         [SetUp]
         public void SetUp()
         {
-            stubDisplay = Substitute.For<IDisplay>();
             stubLight = Substitute.For<ILight>();
-            stubPowerTube = Substitute.For<IPowerTube>();
+            stubOutput = Substitute.For<IOutput>();
 
             powerButton = new Button();
             startCancelButton = new Button();
             timeButton = new Button();
+
             door = new Door();
 
             sutTimer = new Timer();
-            sutCookController = new CookController(sutTimer,stubDisplay,stubPowerTube);
-            sut_ = new UserInterface(powerButton,timeButton,startCancelButton,door,stubDisplay,stubLight,sutCookController);
+
+            sutDisplay = new Display(stubOutput);
+            sutPowerTube = new PowerTube(stubOutput);
+
+            sutCookController = new CookController(sutTimer,sutDisplay,sutPowerTube);
+            sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, sutDisplay, stubLight, sutCookController);
             sutCookController.UI = sut_;
+            
+
 
 
         }
 
+
         [Test]
-        public void thatnogetsker()
+        public void cookControllerCallTimer()
         {
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
             Thread.Sleep(61000);
-            stubDisplay.Received(1).ShowTime(0,0);
-            
-            
+            stubOutput.Received().OutputLine(Arg.Is<string>("PowerTube turned off"));
+
         }
 
+
         [Test]
-        public void thatnogetsker2()
+        public void cookControllerCallDisplay()
         {
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
-            Thread.Sleep(62000);
-            stubDisplay.DidNotReceive().ShowTime(0, -1);
-
-
-        }
-
-        [Test]
-        public void thatnogetsker3()
-        {
-            powerButton.Press();
-            timeButton.Press();
-            timeButton.Press();
-            startCancelButton.Press();
-
-            Thread.Sleep(62000);
-            stubDisplay.DidNotReceive().ShowTime(0, 50);
-
-
-        }
-
-        [Test]
-        public void thatnogetsker4()
-        {
-            powerButton.Press();
-            timeButton.Press();
-            
-            startCancelButton.Press();
-
-            Thread.Sleep(62000);
-            
-            stubPowerTube.Received(1).TurnOff();
-            stubDisplay.Received(2).Clear();
-
+            Thread.Sleep(3000);
+            stubOutput.Received().OutputLine(Arg.Is<string>(s => s.StartsWith("Display shows:") && s.Length-s.Replace(":","").Length==2));
         }
     }
 }

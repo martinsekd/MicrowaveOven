@@ -1,128 +1,111 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
 using NSubstitute;
 using NUnit.Framework;
+using Timer = MicrowaveOvenClasses.Boundary.Timer;
 
 namespace Microwave.test.integration
 {
     [TestFixture]
     public class Step6
     {
-        //top level modules
-        private Door _door;
-        private IButton _powerButton;
-        private IButton _timeButton;
-        private IButton _startCancelButton;
-        //modules included
-        private UserInterface _userInterface;
-        private IOutput _output;
-        private Light _light;
-        //stubs
-        private ICookController _cookController;
-        private Display _display;
 
-        
-        private StringWriter stringWriter;
-        
+        //top modules
+        private IButton powerButton;
+        private IButton startCancelButton;
+        private IButton timeButton;
+        private IDoor door;
+
+        //module included
+        private UserInterface sut_;
+        private CookController sutCookController;
+        private ITimer sutTimer;
+
+        //stubs
+        private ILight stubLight;
+        private IDisplay stubDisplay;
+        private IPowerTube stubPowerTube;
 
         [SetUp]
         public void SetUp()
         {
-            //console test
-            stringWriter = new StringWriter();
-            Console.SetOut(stringWriter);
+            stubDisplay = Substitute.For<IDisplay>();
+            stubLight = Substitute.For<ILight>();
+            stubPowerTube = Substitute.For<IPowerTube>();
 
-            _output = new Output();
-            _light = new Light(_output);
+            powerButton = new Button();
+            startCancelButton = new Button();
+            timeButton = new Button();
+            door = new Door();
 
-            _door = new Door();
+            sutTimer = new Timer();
+            sutCookController = new CookController(sutTimer,stubDisplay,stubPowerTube);
+            sut_ = new UserInterface(powerButton,timeButton,startCancelButton,door,stubDisplay,stubLight,sutCookController);
+            sutCookController.UI = sut_;
 
-            _powerButton = new Button();
-            _timeButton = new Button();
-            _startCancelButton = new Button();
-            _display = Substitute.For<Display>(_output);
-            _cookController = Substitute.For<ICookController>();
-
-            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display,_light,_cookController);
-           
 
         }
 
         [Test]
-        public void LightTurnsOn_WasOff_CorrectOutPutString()
+        public void thatnogetsker()
         {
-            //act
-            //_door.Close();
-            _door.Open();
-            //_door.Opened += Raise.EventWith(this, EventArgs.Empty);
-            //_light.TurnOn();
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+
+            Thread.Sleep(61000);
+            stubDisplay.Received(1).ShowTime(0,0);
             
-           
-            
-            //Assert
-            
-            //Console.WriteLine("Light is turned on");
-            Assert.That(stringWriter.ToString(),Does.Contain("Light is turned on"));
             
         }
 
         [Test]
-        public void LightTurnsOff_WasOn_CorrectOutPutString()
+        public void thatnogetsker2()
         {
-            _door.Open();
-            //_light.TurnOn();
-            _door.Close();
-            //_door.Closed += Raise.EventWith(this, EventArgs.Empty);
+            powerButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
+
+            Thread.Sleep(62000);
+            stubDisplay.DidNotReceive().ShowTime(0, -1);
 
 
-            //Assert
-            //_output.Received().OutputLine(Arg.Is<string>(x =>
-            //  x == "Light is turned off"));
-            //Console.WriteLine("Light turns off");
-            Assert.That(stringWriter.ToString(), Does.Contain("Light is turned off"));
-        }
-
-        private void _door_Closed(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         [Test]
-        public void TurnOn_WasOn_CorrectOutput()
+        public void thatnogetsker3()
         {
-            _door.Open();
-            _light.TurnOn();
-            _light.TurnOn();
+            powerButton.Press();
+            timeButton.Press();
+            timeButton.Press();
+            startCancelButton.Press();
 
-            //Assert
-            //_output.Received().OutputLine(Arg.Is<string>(x =>
-            //    x == "Light is turned on"));
+            Thread.Sleep(62000);
+            stubDisplay.DidNotReceive().ShowTime(0, 50);
+
+
+        }
+
+        [Test]
+        public void thatnogetsker4()
+        {
+            powerButton.Press();
+            timeButton.Press();
             
-            Assert.That(stringWriter.ToString(),Does.Contain("on"));
-        }
+            startCancelButton.Press();
 
-        [Test]
-        public void TurnOff_WasOff_CorrectOutput()
-        {
-            //Have to turn on, and then turn off twice to check this - because isOn (boolean) is set to false at start
-            _door.Close();
-            _light.TurnOn();
-            //_door.Open();
-            //_door.Close();
-            _light.TurnOff();
-            _light.TurnOff();
+            Thread.Sleep(62000);
+            
+            stubPowerTube.Received(1).TurnOff();
+            stubDisplay.Received(2).Clear();
 
-            //Assert
-           // _output.Received().OutputLine(Arg.Is<string>(x =>
-             //   x == "Light is turned off"));
-             Assert.That(stringWriter.ToString(),Does.Contain("off"));
         }
     }
 }

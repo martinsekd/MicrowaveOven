@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
+using MicrowaveOvenClasses;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
@@ -16,91 +16,85 @@ namespace Microwave.test.integration
     [TestFixture]
     public class Step8
     {
-        //top modules
-        private IButton powerButton;
-        private IButton startCancelButton;
-        private IButton timeButton;
-        private IDoor door;
+        //top level modules
+        private Button powerButton;
+        private Button timeButton;
+        private Button startCancelButton;
+        private Door door;
 
-        //module included
-        private UserInterface sut_;
-        private CookController sutCookController;
-        private ITimer sutTimer;
-        private IOutput sutOutput;
+        //included modules
+        private Output output;
+        private ILight fakeLight;
+        private Display sut;
 
         //stubs
-        private ILight stubLight;
-        private IDisplay stubDisplay;
-        private IPowerTube sutPowerTube;
-
+        private ICookController fakeCookController;
+        private UserInterface userInterface;
         private StringWriter stringWriter;
 
         [SetUp]
         public void SetUp()
         {
-            stringWriter = new StringWriter();
-            Console.SetOut(stringWriter);
-
-            
-            stubLight = Substitute.For<ILight>();
-            stubDisplay = Substitute.For<IDisplay>();
-            sutTimer = new MicrowaveOvenClasses.Boundary.Timer();
-
+            //Setup driven classes
             powerButton = new Button();
             timeButton = new Button();
             startCancelButton = new Button();
-            
-            sutOutput = new Output();
             door = new Door();
-            sutPowerTube = new PowerTube(sutOutput);
-            
-            sutCookController = new CookController(sutTimer, stubDisplay, sutPowerTube);
-            sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, stubDisplay, stubLight, sutCookController);
-            sutCookController.UI = sut_;
 
 
+
+            //Setup classes required by sut
+            output = new Output();
+
+
+            sut = new Display(output);
+
+
+                //Setup fakes required by classes required by sut
+                fakeLight = Substitute.For<ILight>();
+                fakeCookController = Substitute.For<ICookController>();
+
+            userInterface = new UserInterface(powerButton, timeButton, startCancelButton, door, sut, fakeLight, fakeCookController);
+
+            //Setup stringWriter to test output is correct
+            stringWriter = new StringWriter();
+
+            //Override stdout
+            Console.SetOut(stringWriter);
+        }
+
+        //Test that output outputs the expected string when Display.Clear is called.
+        [Test]
+        public void PressStartCancelButton_DisplayIsCleared()
+        {
+            startCancelButton.Press();
+
+            Assert.That(stringWriter.ToString(), Does.Contain("Display cleared"));
+        }
+
+
+        //Test that output outputs the expected string when Display.ShowPower() is called.
+        [Test]
+        public void PressPowerButton_DisplayShowsPowerLevel()
+        {
+            powerButton.Press();
+
+            string outputtedString = stringWriter.ToString();
+            Assert.That(Helper.RegexMatchWithWildCard(outputtedString, "Display shows: * W\r\n"),Is.True);
         }
 
         [Test]
-        public void Press_startMicrowaveWith1Minute_TurnOn()
+        public void PressPowerAndTimeButton_DisplayShowsTime()
         {
-            //act
             powerButton.Press();
+            StringBuilder stringBuilder = stringWriter.GetStringBuilder();
+
+            Helper.ClearStringWriter(stringWriter);
+
             timeButton.Press();
-            startCancelButton.Press();
 
-            //assert
-            Assert.That(stringWriter.ToString(),Does.StartWith("PowerTube works with "));
+            string outputtedString = stringWriter.ToString();
+            Assert.That(Helper.RegexMatchWithWildCard(outputtedString, "Display shows: *:*\r\n"),Is.True);
         }
-
-        [Test]
-        public void Press_startMicrowaveWith1Minute_TurnOff()
-        {
-            //act
-            powerButton.Press();
-            timeButton.Press();
-            startCancelButton.Press();
-            Thread.Sleep(61000);
-            
-
-            //assert
-            Assert.That(stringWriter.ToString(), Does.Contain("PowerTube turned off"));
-        }
-        //[Test]
-        //public void TurnOn_WasOff_CorrectOutput()
-        //{
-        //    //_powerTube.TurnOff();
-        //    _powerTube.TurnOn(power:50);
-
-        //    Assert.That(_output,Is.EqualTo("50 %"));
-        //}
-        //[Test]
-        //public void TurnOff_WasOn_CorrectOutput()
-        //{
-        //    _powerTube.TurnOn(power: 50);
-        //    _powerTube.TurnOff();
-
-        //    Assert.That(_output, Is.EqualTo("PowerTube turned off"));
-        //}
     }
 }

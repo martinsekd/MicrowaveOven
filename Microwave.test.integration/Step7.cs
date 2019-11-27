@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MicrowaveOvenClasses;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
 using MicrowaveOvenClasses.Interfaces;
@@ -17,84 +16,113 @@ namespace Microwave.test.integration
     public class Step7
     {
         //top level modules
-        private Button powerButton;
-        private Button timeButton;
-        private Button startCancelButton;
-        private Door door;
-
-        //included modules
-        private Output output;
-        private ILight fakeLight;
-        private Display sut;
-
+        private Door _door;
+        private IButton _powerButton;
+        private IButton _timeButton;
+        private IButton _startCancelButton;
+        //modules included
+        private UserInterface _userInterface;
+        private IOutput _output;
+        private Light _light;
         //stubs
-        private ICookController fakeCookController;
-        private UserInterface userInterface;
+        private ICookController _cookController;
+        private Display _display;
+
+        
         private StringWriter stringWriter;
+        
 
         [SetUp]
         public void SetUp()
         {
-            //Setup driven classes
-            powerButton = new Button();
-            timeButton = new Button();
-            startCancelButton = new Button();
-            door = new Door();
-
-
-
-            //Setup classes required by sut
-            output = new Output();
-
-
-            sut = new Display(output);
-
-
-                //Setup fakes required by classes required by sut
-                fakeLight = Substitute.For<ILight>();
-                fakeCookController = Substitute.For<ICookController>();
-
-            userInterface = new UserInterface(powerButton, timeButton, startCancelButton, door, sut, fakeLight, fakeCookController);
-
-            //Setup stringWriter to test output is correct
+            //console test
             stringWriter = new StringWriter();
-
-            //Override stdout
             Console.SetOut(stringWriter);
-        }
 
-        //Test that output outputs the expected string when Display.Clear is called.
-        [Test]
-        public void PressStartCancelButton_DisplayIsCleared()
-        {
-            startCancelButton.Press();
+            _output = new Output();
+            _light = new Light(_output);
 
-            Assert.That(stringWriter.ToString(), Does.Contain("Display cleared"));
-        }
+            _door = new Door();
 
+            _powerButton = new Button();
+            _timeButton = new Button();
+            _startCancelButton = new Button();
+            _display = Substitute.For<Display>(_output);
+            _cookController = Substitute.For<ICookController>();
 
-        //Test that output outputs the expected string when Display.ShowPower() is called.
-        [Test]
-        public void PressPowerButton_DisplayShowsPowerLevel()
-        {
-            powerButton.Press();
+            _userInterface = new UserInterface(_powerButton, _timeButton, _startCancelButton, _door, _display,_light,_cookController);
+           
 
-            string outputtedString = stringWriter.ToString();
-            Assert.That(Helper.RegexMatchWithWildCard(outputtedString, "Display shows: * W\r\n"),Is.True);
         }
 
         [Test]
-        public void PressPowerAndTimeButton_DisplayShowsTime()
+        public void LightTurnsOn_WasOff_CorrectOutPutString()
         {
-            powerButton.Press();
-            StringBuilder stringBuilder = stringWriter.GetStringBuilder();
+            //act
+            //_door.Close();
+            _door.Open();
+            //_door.Opened += Raise.EventWith(this, EventArgs.Empty);
+            //_light.TurnOn();
+            
+           
+            
+            //Assert
+            
+            //Console.WriteLine("Light is turned on");
+            Assert.That(stringWriter.ToString(),Does.Contain("Light is turned on"));
+            
+        }
 
-            Helper.ClearStringWriter(stringWriter);
+        [Test]
+        public void LightTurnsOff_WasOn_CorrectOutPutString()
+        {
+            _door.Open();
+            //_light.TurnOn();
+            _door.Close();
+            //_door.Closed += Raise.EventWith(this, EventArgs.Empty);
 
-            timeButton.Press();
 
-            string outputtedString = stringWriter.ToString();
-            Assert.That(Helper.RegexMatchWithWildCard(outputtedString, "Display shows: *:*\r\n"),Is.True);
+            //Assert
+            //_output.Received().OutputLine(Arg.Is<string>(x =>
+            //  x == "Light is turned off"));
+            //Console.WriteLine("Light turns off");
+            Assert.That(stringWriter.ToString(), Does.Contain("Light is turned off"));
+        }
+
+        private void _door_Closed(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        [Test]
+        public void TurnOn_WasOn_CorrectOutput()
+        {
+            _door.Open();
+            _light.TurnOn();
+            _light.TurnOn();
+
+            //Assert
+            //_output.Received().OutputLine(Arg.Is<string>(x =>
+            //    x == "Light is turned on"));
+            
+            Assert.That(stringWriter.ToString(),Does.Contain("on"));
+        }
+
+        [Test]
+        public void TurnOff_WasOff_CorrectOutput()
+        {
+            //Have to turn on, and then turn off twice to check this - because isOn (boolean) is set to false at start
+            _door.Close();
+            _light.TurnOn();
+            //_door.Open();
+            //_door.Close();
+            _light.TurnOff();
+            _light.TurnOff();
+
+            //Assert
+           // _output.Received().OutputLine(Arg.Is<string>(x =>
+             //   x == "Light is turned off"));
+             Assert.That(stringWriter.ToString(),Does.Contain("off"));
         }
     }
 }
