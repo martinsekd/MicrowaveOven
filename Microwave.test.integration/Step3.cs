@@ -16,17 +16,24 @@ namespace Microwave.test.integration
     [TestFixture]
     public class Step3
     {
+        //top level modules
         private Button powerButton;
         private Button timeButton;
         private Button startCancelButton;
         private Door door;
-        private IOutput fakeOutput;
-        private ITimer fakeTimer;
-        private IPowerTube fakePowerTube;
+        
+        
+
+        //included modules
         private Light light;
         private Display display;
         private CookController cookController;
         private UserInterface sut;
+
+        //stubs
+        private IOutput fakeOutput;
+        private ITimer fakeTimer;
+        private IPowerTube fakePowerTube;
 
         [SetUp]
         public void SetUp()

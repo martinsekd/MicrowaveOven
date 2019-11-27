@@ -16,10 +16,13 @@ namespace Microwave.test.integration
     [TestFixture]
     public class Step7
     {
+        //top level modules
         private Button powerButton;
         private Button timeButton;
         private Button startCancelButton;
         private Door door;
+
+        //included modules
         private Output output;
         private ILight fakeLight;
         private Display sut;
@@ -56,14 +59,6 @@ namespace Microwave.test.integration
 
             //Override stdout
             Console.SetOut(stringWriter);
-        }
-
-
-        [Test]
-        public void PressPowerButton()
-        {
-            Console.WriteLine("Boobies");
-            Assert.That(stringWriter.ToString(), Does.Contain("Boobies"));
         }
 
         //Test that output outputs the expected string when Display.Clear is called.
