@@ -14,12 +14,16 @@ namespace Microwave.test.integration
     [TestFixture]
     public class Step2
     {
+        //top level modules
+        private IDoor door;
 
+        //included modules
         private UserInterface sut_;
+
+        //stubs
         private IButton powerButton;
         private IButton startCancelButton;
         private IButton timeButton;
-        private IDoor door;
 
         private ICookController stubCookController;
         private IDisplay stubDisplay;
@@ -32,30 +36,35 @@ namespace Microwave.test.integration
             startCancelButton = Substitute.For<IButton>();
             timeButton = Substitute.For<IButton>();
 
-            door = new Door();
+            
 
             stubCookController = Substitute.For<ICookController>();
             stubDisplay = Substitute.For<IDisplay>();
             stubLight = Substitute.For<ILight>();
-
+            
+            door = new Door();
             sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, stubDisplay, stubLight, stubCookController);
         }
 
         [Test]
-        public void Open_hh_kk()
+        public void Open_OpenDoor_LightTurnOn()
         {
+            //act
             door.Open();
             
+            //assert
             stubLight.Received(1).TurnOn();
 
         }
 
         [Test]
-        public void Close_hh_kk()
+        public void Close_CloseDoor_LightTurnOff()
         {
+            //act
             door.Open();
             door.Close();
 
+            //assert
             stubLight.Received(1).TurnOff();
         }
     }

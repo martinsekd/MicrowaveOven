@@ -58,30 +58,32 @@ namespace Microwave.test.integration
             sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, stubDisplay, stubLight, sutCookController);
             sutCookController.UI = sut_;
 
-            
-            
-            
 
         }
 
         [Test]
-        public void t_t_t()
+        public void Press_startMicrowaveWith1Minute_TurnOn()
         {
+            //act
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
+            //assert
             Assert.That(stringWriter.ToString(),Does.StartWith("PowerTube works with "));
         }
 
         [Test]
-        public void t_t_t2()
+        public void Press_startMicrowaveWith1Minute_TurnOff()
         {
+            //act
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
             Thread.Sleep(61000);
-            //Console.WriteLine("PowerTube turned off");
+            
+
+            //assert
             Assert.That(stringWriter.ToString(), Does.Contain("PowerTube turned off"));
         }
         //[Test]
