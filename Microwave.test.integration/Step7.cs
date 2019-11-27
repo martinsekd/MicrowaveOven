@@ -16,10 +16,13 @@ namespace Microwave.test.integration
     [TestFixture]
     public class Step7
     {
+        //top level modules
         private Button powerButton;
         private Button timeButton;
         private Button startCancelButton;
         private Door door;
+
+        //included modules
         private Output output;
         private ILight fakeLight;
         private Display sut;
