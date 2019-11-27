@@ -26,6 +26,8 @@ namespace Microwave.test.integration
         private Output output;
         private ILight fakeLight;
         private Display sut;
+
+        //stubs
         private ICookController fakeCookController;
         private UserInterface userInterface;
         private StringWriter stringWriter;
