@@ -61,14 +61,6 @@ namespace Microwave.test.integration
             Console.SetOut(stringWriter);
         }
 
-
-        [Test]
-        public void PressPowerButton()
-        {
-            Console.WriteLine("Boobies");
-            Assert.That(stringWriter.ToString(), Does.Contain("Boobies"));
-        }
-
         //Test that output outputs the expected string when Display.Clear is called.
         [Test]
         public void PressStartCancelButton_DisplayIsCleared()
