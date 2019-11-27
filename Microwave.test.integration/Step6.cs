@@ -39,7 +39,7 @@ namespace Microwave.test.integration
             stringWriter = new StringWriter();
             Console.SetOut(stringWriter);
 
-            _output = Substitute.For<IOutput>();
+            _output = new Output();
             _light = new Light(_output);
 
             _door = new Door();
@@ -104,7 +104,7 @@ namespace Microwave.test.integration
             //Assert
             //_output.Received().OutputLine(Arg.Is<string>(x =>
             //    x == "Light is turned on"));
-            Console.WriteLine("Light turns on");
+            
             Assert.That(stringWriter.ToString(),Does.Contain("on"));
         }
 
