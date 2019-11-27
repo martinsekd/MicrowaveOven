@@ -45,14 +45,12 @@ namespace Microwave.test.integration
 
             //Setup classes required by sut
             output = new Output();
-
-
             sut = new Display(output);
 
 
-                //Setup fakes required by classes required by sut
-                fakeLight = Substitute.For<ILight>();
-                fakeCookController = Substitute.For<ICookController>();
+            //Setup fakes required by classes required by sut
+            fakeLight = Substitute.For<ILight>();
+            fakeCookController = Substitute.For<ICookController>();
 
             userInterface = new UserInterface(powerButton, timeButton, startCancelButton, door, sut, fakeLight, fakeCookController);
 

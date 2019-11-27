@@ -22,43 +22,39 @@ namespace Microwave.test.integration
         private IButton powerButton;
         private IButton startCancelButton;
         private IButton timeButton;
-        private IDoor door;
+        
 
         //module included
         private UserInterface sut_;
         private CookController sutCookController;
         private ITimer sutTimer;
         private IDisplay sutDisplay;
-        private IPowerTube sutPowerTube;
+
 
 
         //stubs
+        private IDoor door;
         private ILight stubLight;
         private IOutput stubOutput;
+        private IPowerTube stubPowerTube;
 
         [SetUp]
         public void SetUp()
         {
             stubLight = Substitute.For<ILight>();
             stubOutput = Substitute.For<IOutput>();
+            door = Substitute.For<IDoor>();
+            stubPowerTube = Substitute.For<IPowerTube>();
 
             powerButton = new Button();
             startCancelButton = new Button();
             timeButton = new Button();
 
-            door = new Door();
-
             sutTimer = new Timer();
-
             sutDisplay = new Display(stubOutput);
-            sutPowerTube = new PowerTube(stubOutput);
-
-            sutCookController = new CookController(sutTimer,sutDisplay,sutPowerTube);
+            sutCookController = new CookController(sutTimer,sutDisplay,stubPowerTube);
             sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, sutDisplay, stubLight, sutCookController);
             sutCookController.UI = sut_;
-            
-
-
 
         }
 
@@ -66,11 +62,14 @@ namespace Microwave.test.integration
         [Test]
         public void cookControllerCallTimer()
         {
+            //act
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
             Thread.Sleep(61000);
+            
+            //assert
             stubOutput.Received().OutputLine(Arg.Is<string>("PowerTube turned off"));
 
         }
@@ -79,11 +78,14 @@ namespace Microwave.test.integration
         [Test]
         public void cookControllerCallDisplay()
         {
+            //act
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
             Thread.Sleep(3000);
+            
+            //assert
             stubOutput.Received().OutputLine(Arg.Is<string>(s => s.StartsWith("Display shows:") && s.Length-s.Replace(":","").Length==2));
         }
     }

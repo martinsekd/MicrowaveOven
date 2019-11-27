@@ -20,10 +20,12 @@ namespace Microwave.test.integration
         private IButton _powerButton;
         private IButton _timeButton;
         private IButton _startCancelButton;
+        
         //modules included
         private UserInterface _userInterface;
         private IOutput _output;
         private Light _light;
+        
         //stubs
         private ICookController _cookController;
         private Display _display;

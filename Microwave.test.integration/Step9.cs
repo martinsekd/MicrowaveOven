@@ -20,18 +20,19 @@ namespace Microwave.test.integration
         private IButton powerButton;
         private IButton startCancelButton;
         private IButton timeButton;
-        private IDoor door;
+        
 
         //module included
         private UserInterface sut_;
         private CookController sutCookController;
         private ITimer sutTimer;
         private IOutput sutOutput;
-
+        private IPowerTube sutPowerTube;
+        
         //stubs
         private ILight stubLight;
         private IDisplay stubDisplay;
-        private IPowerTube sutPowerTube;
+        private IDoor door;
 
         private StringWriter stringWriter;
 
@@ -44,14 +45,16 @@ namespace Microwave.test.integration
             
             stubLight = Substitute.For<ILight>();
             stubDisplay = Substitute.For<IDisplay>();
-            sutTimer = new MicrowaveOvenClasses.Boundary.Timer();
-
+            door = Substitute.For<IDoor>();
+            
+            
+            
             powerButton = new Button();
             timeButton = new Button();
             startCancelButton = new Button();
             
+            sutTimer = new MicrowaveOvenClasses.Boundary.Timer();
             sutOutput = new Output();
-            door = new Door();
             sutPowerTube = new PowerTube(sutOutput);
             
             sutCookController = new CookController(sutTimer, stubDisplay, sutPowerTube);

@@ -20,19 +20,20 @@ namespace Microwave.test.integration
         private IButton powerButton;
         private IButton startCancelButton;
         private IButton timeButton;
-        private IDoor door;
+        
 
         //module included
         private UserInterface sut_;
         private CookController sutCookController;
-        private ITimer sutTimer;
-        private IDisplay sutDisplay;
         private IPowerTube sutPowerTube;
 
 
         //stubs
+        private IDoor door;
         private ILight stubLight;
         private IOutput stubOutput;
+        private ITimer stubTimer;
+        private IDisplay stubDisplay;
 
         [SetUp]
         public void SetUp()
@@ -44,15 +45,15 @@ namespace Microwave.test.integration
             startCancelButton = new Button();
             timeButton = new Button();
 
-            door = new Door();
+            door = Substitute.For<IDoor>();
 
-            sutTimer = Substitute.For<ITimer>();
+            stubTimer = Substitute.For<ITimer>();
 
-            sutDisplay = new Display(stubOutput);
+            stubDisplay = Substitute.For<IDisplay>();
             sutPowerTube = new PowerTube(stubOutput);
 
-            sutCookController = new CookController(sutTimer,sutDisplay,sutPowerTube);
-            sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, sutDisplay, stubLight, sutCookController);
+            sutCookController = new CookController(stubTimer,stubDisplay,sutPowerTube);
+            sut_ = new UserInterface(powerButton, timeButton, startCancelButton, door, stubDisplay, stubLight, sutCookController);
             sutCookController.UI = sut_;
             
 
@@ -68,7 +69,7 @@ namespace Microwave.test.integration
             startCancelButton.Press();
 
             //don't want to wait too long
-            sutTimer.Expired += Raise.Event();
+            stubTimer.Expired += Raise.Event();
             stubLight.Received(1).TurnOff();
             
             //sutCookController.OnTimerExpired += Raise.EventWith(new object());
@@ -89,7 +90,7 @@ namespace Microwave.test.integration
             startCancelButton.Press();
 
             //don't want to wait too long
-            sutTimer.Expired += Raise.Event();
+            stubTimer.Expired += Raise.Event();
 
             //stubOutput.Received(1).OutputLine("");
             stubOutput.Received(1).OutputLine($"PowerTube works with 50 W");
@@ -103,7 +104,7 @@ namespace Microwave.test.integration
             startCancelButton.Press();
 
             //don't want to wait too long
-            sutTimer.Expired += Raise.Event();
+            stubTimer.Expired += Raise.Event();
             
 
             stubOutput.Received(1).OutputLine($"PowerTube turned off");

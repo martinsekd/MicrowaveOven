@@ -21,7 +21,7 @@ namespace Microwave.test.integration
         private IButton powerButton;
         private IButton startCancelButton;
         private IButton timeButton;
-        private IDoor door;
+        
 
         //module included
         private UserInterface sut_;
@@ -29,6 +29,7 @@ namespace Microwave.test.integration
         private ITimer sutTimer;
 
         //stubs
+        private IDoor door;
         private ILight stubLight;
         private IDisplay stubDisplay;
         private IPowerTube stubPowerTube;
@@ -39,11 +40,12 @@ namespace Microwave.test.integration
             stubDisplay = Substitute.For<IDisplay>();
             stubLight = Substitute.For<ILight>();
             stubPowerTube = Substitute.For<IPowerTube>();
+            door = Substitute.For<IDoor>();
 
             powerButton = new Button();
             startCancelButton = new Button();
             timeButton = new Button();
-            door = new Door();
+            
 
             sutTimer = new Timer();
             sutCookController = new CookController(sutTimer,stubDisplay,stubPowerTube);
@@ -54,58 +56,54 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void thatnogetsker()
+        public void ShowTime_StartMicrowaveWith1Minute_ShowtimeCalled()
         {
+            //act
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
             Thread.Sleep(61000);
+            
+            //assert
             stubDisplay.Received(1).ShowTime(0,0);
             
             
         }
 
         [Test]
-        public void thatnogetsker2()
+        public void ShowTime_StartMicrowaveWith1Minute_ShowtimeCalledNotNegative()
         {
+            //act
             powerButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
-            Thread.Sleep(62000);
+            Thread.Sleep(61000);
+            
+            //assert
             stubDisplay.DidNotReceive().ShowTime(0, -1);
 
 
         }
 
         [Test]
-        public void thatnogetsker3()
+        public void ShowTime_StartMicrowaveWith2Minutes_ShowtimeNotReached55SecondsLeft()
         {
+            //act
             powerButton.Press();
             timeButton.Press();
             timeButton.Press();
             startCancelButton.Press();
 
             Thread.Sleep(62000);
-            stubDisplay.DidNotReceive().ShowTime(0, 50);
+            
+            //assert
+            stubDisplay.DidNotReceive().ShowTime(0, 55);
 
 
         }
 
-        [Test]
-        public void thatnogetsker4()
-        {
-            powerButton.Press();
-            timeButton.Press();
-            
-            startCancelButton.Press();
-
-            Thread.Sleep(62000);
-            
-            stubPowerTube.Received(1).TurnOff();
-            stubDisplay.Received(2).Clear();
-
-        }
+        
     }
 }

@@ -21,8 +21,6 @@ namespace Microwave.test.integration
         private Button timeButton;
         private Button startCancelButton;
         private Door door;
-        
-        
 
         //included modules
         private Light light;
