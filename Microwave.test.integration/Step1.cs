@@ -53,8 +53,6 @@ namespace Microwave.test.integration
             
             //assert
             stubDisplay.Received(1).ShowPower(Arg.Any<int>());
-            //sut_.Received(1).OnPowerPressed(Arg.Any<object>(),Arg.Any<EventArgs>());
-
         }
 
         [Test]
@@ -66,8 +64,6 @@ namespace Microwave.test.integration
 
             //assert
             stubDisplay.Received(2).ShowPower(Arg.Any<int>());
-            //sut_.Received(1).OnPowerPressed(Arg.Any<object>(),Arg.Any<EventArgs>());
-
         }
 
 
@@ -93,8 +89,6 @@ namespace Microwave.test.integration
 
             //assert
             stubDisplay.Received(2).ShowTime(Arg.Any<int>(), Arg.Any<int>());
-            //sut_.Received(1).OnTimePressed(Arg.Any<object>(), Arg.Any<EventArgs>());
-
         }
 
         [Test]

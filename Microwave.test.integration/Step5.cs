@@ -60,7 +60,7 @@ namespace Microwave.test.integration
 
 
         [Test]
-        public void cookControllerCallTimer()
+        public void Press_StartTimerAndWaitToEnd_TurnOffPowertube()
         {
             //act
             powerButton.Press();
@@ -70,13 +70,14 @@ namespace Microwave.test.integration
             Thread.Sleep(61000);
             
             //assert
-            stubOutput.Received().OutputLine(Arg.Is<string>("PowerTube turned off"));
+            //stubOutput.Received().OutputLine(Arg.Is<string>("PowerTube turned off"));
+            stubPowerTube.Received(1).TurnOff();
 
         }
 
 
         [Test]
-        public void cookControllerCallDisplay()
+        public void Press_StartMicrowaveWith1Minute_LogLineCalled()
         {
             //act
             powerButton.Press();

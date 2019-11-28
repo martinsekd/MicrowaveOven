@@ -24,12 +24,13 @@ namespace Microwave.test.integration
 
         //included modules
         private Output output;
-        private ILight fakeLight;
         private Display sut;
+        private UserInterface userInterface;
 
         //stubs
         private ICookController fakeCookController;
-        private UserInterface userInterface;
+        private ILight fakeLight;
+
         private StringWriter stringWriter;
 
         [SetUp]
@@ -65,8 +66,10 @@ namespace Microwave.test.integration
         [Test]
         public void PressStartCancelButton_DisplayIsCleared()
         {
+            //act
             startCancelButton.Press();
 
+            //assert
             Assert.That(stringWriter.ToString(), Does.Contain("Display cleared"));
         }
 
@@ -75,8 +78,10 @@ namespace Microwave.test.integration
         [Test]
         public void PressPowerButton_DisplayShowsPowerLevel()
         {
+            //act
             powerButton.Press();
 
+            //assert
             string outputtedString = stringWriter.ToString();
             Assert.That(Helper.RegexMatchWithWildCard(outputtedString, "Display shows: * W\r\n"),Is.True);
         }
@@ -84,6 +89,7 @@ namespace Microwave.test.integration
         [Test]
         public void PressPowerAndTimeButton_DisplayShowsTime()
         {
+            //act
             powerButton.Press();
             StringBuilder stringBuilder = stringWriter.GetStringBuilder();
 
@@ -91,6 +97,7 @@ namespace Microwave.test.integration
 
             timeButton.Press();
 
+            //assert
             string outputtedString = stringWriter.ToString();
             Assert.That(Helper.RegexMatchWithWildCard(outputtedString, "Display shows: *:*\r\n"),Is.True);
         }

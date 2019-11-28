@@ -58,54 +58,26 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void LightTurnsOn_WasOff_CorrectOutPutString()
+        public void Open_TurnOnLight_LightIsOn()
         {
             //act
-            //_door.Close();
             _door.Open();
-            //_door.Opened += Raise.EventWith(this, EventArgs.Empty);
-            //_light.TurnOn();
-            
            
-            
             //Assert
-            
-            //Console.WriteLine("Light is turned on");
             Assert.That(stringWriter.ToString(),Does.Contain("Light is turned on"));
             
         }
 
         [Test]
-        public void LightTurnsOff_WasOn_CorrectOutPutString()
+        public void Close_TurnOffLight_LightIsOff()
         {
+            //act
             _door.Open();
-            //_light.TurnOn();
             _door.Close();
-            //_door.Closed += Raise.EventWith(this, EventArgs.Empty);
-
 
             //Assert
-            //_output.Received().OutputLine(Arg.Is<string>(x =>
-            //  x == "Light is turned off"));
-            //Console.WriteLine("Light turns off");
             Assert.That(stringWriter.ToString(), Does.Contain("Light is turned off"));
         }
 
-        private void _door_Closed(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        [Test]
-        public void TurnOn_WasOn_CorrectOutput()
-        {
-            _door.Open();
-
-            //Assert
-            //_output.Received().OutputLine(Arg.Is<string>(x =>
-            //    x == "Light is turned on"));
-            
-            Assert.That(stringWriter.ToString(),Does.Contain("on"));
-        }
     }
 }

@@ -56,7 +56,7 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void ShowTime_StartMicrowaveWith1Minute_ShowtimeCalled()
+        public void Press_StartMicrowaveWith1Minute_ShowtimeCalled()
         {
             //act
             powerButton.Press();
@@ -72,7 +72,7 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void ShowTime_StartMicrowaveWith1Minute_ShowtimeCalledNotNegative()
+        public void Press_StartMicrowaveWith1Minute_ShowtimeCalledNotNegative()
         {
             //act
             powerButton.Press();
@@ -88,7 +88,7 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void ShowTime_StartMicrowaveWith2Minutes_ShowtimeNotReached55SecondsLeft()
+        public void Press_StartMicrowaveWith2Minutes_ShowtimeNotReached55SecondsLeft()
         {
             //act
             powerButton.Press();

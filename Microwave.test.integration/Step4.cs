@@ -62,7 +62,7 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void cookControllerCallUserInterface()
+        public void Press_StartMicrowaveWithOneMinuteAndWait_LightTurnOff()
         {
             powerButton.Press();
             timeButton.Press();
@@ -76,14 +76,10 @@ namespace Microwave.test.integration
 
         }
 
-        [Test]
-        public void cookControllerCallTimer()
-        {
-
-        }
+        
 
         [Test]
-        public void TurnOn_cookControllerCallPowerTube()
+        public void Press_TurnOnPowerTube_OutputLineCalled()
         {
             powerButton.Press();
             timeButton.Press();
@@ -97,7 +93,7 @@ namespace Microwave.test.integration
         }
 
         [Test]
-        public void TurnOff_cookControllerCallPowerTube()
+        public void Press_TurnOffPowertube_OutputLineCalled()
         {
             powerButton.Press();
             timeButton.Press();
